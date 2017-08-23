@@ -7,17 +7,20 @@ char *uint2bits(uint x);
 int bit_mas_significativo(uint x);
 
 uint insertar_bits(uint x, int pos, uint y, int len) {
-	int res  = 0;
-	int maskx = 1;
-	int masky = 1;
+	uint res  = 0;
+	uint newy = 0;
+	uint maskx = 1;
+	uint masky = 1;
 	int i = 31;
 	int j = 0;
 	int aux = 0;
 	while(i>=j){
 		if(j==pos){
-			while(len > aux){
-				if(masky & y)
+			while(len >= aux){
+				if(masky & y){
 					res = res | masky;
+					newy= newy | masky;
+				}
 				masky = masky << 1;
 				aux++;
 			}
@@ -28,18 +31,44 @@ uint insertar_bits(uint x, int pos, uint y, int len) {
 		masky = masky << 1;
 		j++;
 	}
-	printf("%s\n", uint2bits(x));
-	printf("%s\n", uint2bits(res));
+	printf("%s\n", uint2bits(newy));
 	return res;
 
 }
 
-int main(int argc, char const *argv[]) {
-	if(insertar_bits(0x2, 0, 1, 1)== 5){
-		printf("%s\n", "success");
+void eliminar_espacios(char *s) {
+	int len  = strlen(s)-1;
+	char *str = s;
+	char *aux = s;
+	char *res = aux;
+	int i = 0;
+	while(len > i){
+		*aux = *str;
+		aux++;
+		if(*str==' '){
+			str++;
+			i++;
+			while(*str==' '){
+				str++;
+				i++;
+			}
+			if(*str=='\0')
+				break;
+			str--;
+			i--;
+		}
+		str++;
+		i++;
 	}
-	//printf("%s\n", uint2bits(i));
-	//printf("%s\n", uint2bits(0xa0000002));
+	printf("%s\n", res);
+}
+
+int main(int argc, char const *argv[]) {
+	//if (insertar_bits(0x17, 2, 0x0e, 5)==0x2bb){
+	//	printf("%s\n", "success");
+	//}
+	char s2[]= "   hola que tal   ";
+  	eliminar_espacios(s2);
 	return 0;
 }
 
@@ -60,9 +89,6 @@ int bit_mas_significativo(uint x) {
     return -1;
 }
 
-void eliminar_espacios(char *s) {
-	printf("%s\n", "\n");
-}
 
 char *uint2bits(uint x) {
 	int len = bit_mas_significativo(x)+1;
