@@ -38,28 +38,24 @@ uint insertar_bits(uint x, int pos, uint y, int len) {
 
 void eliminar_espacios(char *s) {
 	int len  = strlen(s)-1;
-	char *str = s;
 	char *aux = s;
-	char *res = aux;
 	int i = 0;
-	while(len > i){
-		if(*str==' '){
-			if(*str++=='\0')
+	while(len >= i){
+		if(*s==' '){
+			if(*s++=='\0')
 				break;
-			while(*str==' '){
-				str++;
+			while(*s==' '){
+				s++;
 				i++;
 			}
-			str--;
+			s--;
 			i--;
 		}
-		*aux = *str;
+		*aux = *s;
 		aux++;
-		str++;
+		s++;
 		i++;
-	}
-	printf("%d\n", len);
-	printf("%s\n", res);
+	} 
 }
 
 /*int main(int argc, char const *argv[]) {
