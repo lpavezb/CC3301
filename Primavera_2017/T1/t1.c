@@ -36,6 +36,13 @@ uint insertar_bits(uint x, int pos, uint y, int len) {
 
 }
 
+int main(int argc, char const *argv[]) {
+	if (insertar_bits(0x17, 2, 0x0e, 5)==0x2bb){
+		printf("%s\n", "success");
+	}
+	
+	return 0;
+}
 void eliminar_espacios(char *s) {
 	int len  = strlen(s)-1;
 	char *aux = s;
@@ -58,14 +65,6 @@ void eliminar_espacios(char *s) {
 	} 
 }
 
-/*int main(int argc, char const *argv[]) {
-	//if (insertar_bits(0x17, 2, 0x0e, 5)==0x2bb){
-	//	printf("%s\n", "success");
-	//}
-	char s2[]= "   hola que tal   ";
-  	eliminar_espacios(s2);
-	return 0;
-}*/
 
 int bit_mas_significativo(uint x) {
     int i = 31, j = 0;
