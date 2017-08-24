@@ -5,7 +5,7 @@
 #include "t1.h"
 
 int main() {
-  printf("Test de insert_bits\n");
+/*  printf("Test de insert_bits\n");
 
   if (insertar_bits(0x2, 0, 1, 1)!= 5) {
     fprintf(stderr, "insertar_bits(0b0010, 0 , 0b1, 1) != 0b0101\n");
@@ -31,7 +31,7 @@ int main() {
   if (insertar_bits(0x17, 2, 0x0e, 5)!=0x2bb) {
     fprintf(stderr, "insertar_bits(0b1 0111, 2, 0b01110, 5) es 0b10 1011 1011\n");
     exit(1);
-  }
+  }*/
 
   printf("Test de eliminar_espacios\n");
 
