@@ -58,7 +58,6 @@ void eliminar_espacios(char *s) {
 		str++;
 		i++;
 	}
-	len=strlen(res);
 	printf("%d\n", len);
 	printf("%s\n", res);
 }
