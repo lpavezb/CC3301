@@ -7,19 +7,25 @@ char *uint2bits(uint x);
 int bit_mas_significativo(uint x);
 
 uint insertar_bits(uint x, int pos, uint y, int len) {
-	uint res  = 0;
-	uint newy = 0;
+	//uint res  = 0;
+	uint newy = y << pos;
 	uint maskx = 1;
-	uint masky = 1;
-	int i = 31;
+	//uint masky = 1;
+	//int i = 31;
 	int j = 0;
-	int aux = 0;
+	//int aux = 0;
+	while(pos-1>=j){
+		if(maskx & x)
+			newy = newy | maskx;
+		maskx = maskx << 1;
+		j++;
+	}/*
 	while(i>=j){
 		if(j==pos){
 			while(len >= aux){
 				if(masky & y){
 					res = res | masky;
-					newy= newy | masky;
+					//newy= newy | masky;
 				}
 				masky = masky << 1;
 				aux++;
@@ -30,9 +36,9 @@ uint insertar_bits(uint x, int pos, uint y, int len) {
 		maskx = maskx << 1;
 		masky = masky << 1;
 		j++;
-	}
+	}*/
 	printf("%s\n", uint2bits(newy));
-	return res;
+	return newy;
 
 }
 
