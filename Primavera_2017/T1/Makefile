@@ -25,7 +25,7 @@
 CFLAGS= -g -Wall -pedantic -std=c99
 LDFLAGS= -g
 
-all: t1
+all: test-t1
 
 test-t1: test-t1.o t1.o
 
