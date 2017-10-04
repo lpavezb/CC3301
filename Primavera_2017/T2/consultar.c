@@ -2,25 +2,28 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* eliminar_espacios(char* s, char* res){
+void eliminar_espacios(char* s){
     int len = strlen(s)-1;
     int i = 0;
     while(i<len){
         if(*s == ' '){
-            res[i]='\0';
+            *s='\0';
             break;
         }
-        res[i]=*s;
         s++;
         i++;
     }
-    return res;
 }
 void buscar(FILE *in, char* palabra) {
     char izqbuff[10];
     char derbuff[10];
     char word[20];
-    char meaning[59];
+    char meaning[60];
+
+    izqbuff[9] = '\0';
+    derbuff[9] = '\0';
+    word[19] = '\0';
+    meaning[59] = '\0';
 
     fread(izqbuff, 1, 10, in);
     fread(derbuff, 1, 10, in);
@@ -30,8 +33,8 @@ void buscar(FILE *in, char* palabra) {
     int izq = atoi(izqbuff);
     int der = atoi(derbuff);
     
-    char aux[20];
-    int comp = strcmp(palabra, eliminar_espacios(word,aux));
+    eliminar_espacios(word);
+    int comp = strcmp(palabra, word);
 
     if(comp == 0){
         printf("%s\n", meaning);
