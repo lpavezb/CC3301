@@ -5,41 +5,37 @@
 
 #include "bolsa.h"
 
-void eliminar_espacios(char* s){
-    int len = strlen(s)-1;
-    int i = 0;
-    while(i<len){
-        if(*s == ' '){
-            *s='\0';
-            break;
-        }
-        s++;
-        i++;
-    }
-}
-
-pthread_mutex_t Buyer;
+pthread_mutex_t buyer_mutex;
 pthread_mutex_t m;
-pthread_cond_t buyer;
+pthread_cond_t buying;
 
 int m_precio = 0;
-char* sell;
-char* buy;
+char* seller;
+char* buyer;
+
+void copy(char* copy_this, char* here){
+	int len = strlen(copy_this);
+	for(int i = 0; i<len; i++)
+		here[i]=copy_this[i];
+	here[len]='\0';
+}
 
 int vendo(int precio, char *vendedor, char *comprador){
 	pthread_mutex_lock(&m);
-	if(m_precio == 0 || m_precio >= precio){
+	if(m_precio == 0 || m_precio > precio){
 		m_precio = precio;
-		sell = vendedor;
-		pthread_cond_wait(&buyer, &m);
-		int len = strlen(buy);
-		for(int i = 0; i<len; i++)
-			comprador[i]=buy[i];
-		comprador[len]='\0';
+		seller = vendedor;
+		pthread_cond_wait(&buying, &m);
+		if(m_precio < precio){
+			pthread_mutex_unlock(&m);
+			return 0;
+		}
+		copy(buyer, comprador);
 		pthread_mutex_unlock(&m);
 		return 1;
 	}
 	else{
+		pthread_cond_broadcast(&buying);
 		pthread_mutex_unlock(&m);
 		return 0;
 	}	
@@ -48,16 +44,11 @@ int vendo(int precio, char *vendedor, char *comprador){
 int compro(char *comprador, char *vendedor){
 	if(m_precio == 0)
 		return 0;
-	pthread_mutex_lock(&Buyer);
-	int len = strlen(sell);
-	for(int i = 0; i<len; i++)
-		vendedor[i]=sell[i];
-	vendedor[len]='\0';
-	buy = comprador;
-	pthread_mutex_unlock(&Buyer);
-	pthread_cond_broadcast(&buyer);
-	int res = m_precio;
-	m_precio = 0;
-	return res;
+	pthread_mutex_lock(&buyer_mutex);
+	copy(seller,vendedor);
+	buyer = comprador;
+	pthread_mutex_unlock(&buyer_mutex);
+	pthread_cond_broadcast(&buying);
+	return m_precio;
 }
 
