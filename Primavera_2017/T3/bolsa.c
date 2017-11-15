@@ -12,6 +12,7 @@ pthread_cond_t buying;
 int m_precio = 0;
 char* seller;
 char* buyer;
+int buy=0;
 
 void copy(char* copy_this, char* here){
 	int len = strlen(copy_this);
@@ -22,43 +23,47 @@ void copy(char* copy_this, char* here){
 
 int vendo(int precio, char *vendedor, char *comprador){
 	pthread_mutex_lock(&m);
+	while(buy)
+		pthread_cond_wait(&buying, &m);
 	if(m_precio > precio || m_precio == 0){
 		m_precio = precio;
 		seller = vendedor;
 		pthread_cond_broadcast(&buying);
-		printf("seller: %s\n", seller);
-		while(buyer == NULL){
-			pthread_cond_wait(&buying, &m);
-			if(m_precio == 0)
-				m_precio = precio;
-			if(m_precio < precio){
-				pthread_mutex_unlock(&m);
-				return 0;
-			}
+		pthread_cond_wait(&buying, &m);
+		if(m_precio < precio || seller != vendedor){
+			pthread_mutex_unlock(&m);
+			return 0;
 		}
-		printf("m_precio: %d, buyer: %s, seller: %s\n", m_precio, buyer, seller);
 		copy(buyer, comprador);
-		buyer = NULL;
+		buyer  = NULL;
+		seller = NULL;
 		m_precio = 0;
+		buy=0;
+		pthread_cond_broadcast(&buying);
 		pthread_mutex_unlock(&m);
 		return 1;
 	}
 	else{
 		pthread_mutex_unlock(&m);
 		return 0;
-	}	
+	}
+	
 }
 
 int compro(char *comprador, char *vendedor){
 	pthread_mutex_lock(&m);
+	while(buy)
+		pthread_cond_wait(&buying, &m);
 	if(m_precio == 0){
 		pthread_mutex_unlock(&m);
 		return 0;
 	}
+	buy=1;
 	copy(seller,vendedor);
-	buyer = comprador;;
+	buyer = comprador;
+	int res = m_precio;
 	pthread_cond_broadcast(&buying);
 	pthread_mutex_unlock(&m);
-	return m_precio;
+	return res;
 }
 
